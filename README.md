@@ -1,5 +1,32 @@
 # MapasApp2
 
+## Geolocalizacion
+
+En el `main.ts` podemos poner una condicion para que el navegador verifique si la geolocalizacion este activada.
+
+```
+// main.ts
+if (!navigator.geolocation) {
+  throw new Error('Navegador no soporta geolocalizacion')
+}
+```
+
+## Uso de Mapbox
+
+## Marcadores
+
+## Polylinles
+
+## Rutas
+
+## Direcciones
+
+## Distancias
+
+## Custom Http Clients ( muy útil )
+
+# Angular
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.4.
 
 ## Development server
