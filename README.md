@@ -52,7 +52,21 @@ export class PlacesService {
 }
 
 ```
+
 En el constructor llamamos a la funcion `getUserLocation()` para que inmediatamente se obtenga el valor cuando se use.
+
+### Condicion para mostrar el cargando
+
+```
+<app-loading *ngIf="!isUserLocationReady; else mapReady"></app-loading>
+
+<ng-template #mapReady>
+  <app-map-view></app-map-view>
+</ng-template>
+
+```
+
+La funcion `isUserLocationReady` es un boolean.
 
 ## Uso de Mapbox
 

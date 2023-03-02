@@ -8,6 +8,12 @@ import { PlacesService } from '../../services/index';
 })
 export class MapScreenComponent {
 
+  get isUserLocationReady() {
+    return this.placesService.isUserLocationReady
+  }
+
+
+
 
   constructor(
     private placesService: PlacesService
