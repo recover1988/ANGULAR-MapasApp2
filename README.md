@@ -11,6 +11,49 @@ if (!navigator.geolocation) {
 }
 ```
 
+Para obtener la geolocalizacion del usuario en un formato [longitud, latitud] que es el que usa MapBox(para GoogleMap es al reves). Creamos un servicio en el cual haremos una funcion que devuelva una promesa con los valores de la Geolocaclizacion pero para ser usada con los operadores de rxjs debemos devolverla como promesa.
+
+```
+// services/places.service.ts
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PlacesService {
+
+  public userLocation?: [number, number];
+
+  get isUserLocationReady(): boolean {
+    return !!this.userLocation;
+  }
+
+  public async getUserLocation(): Promise<[number, number]> {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        // los argumentso de el callback son args = { coords, timestap}
+        ({ coords, timestamp }) => {
+          this.userLocation = [coords.longitude, coords.latitude]
+          resolve(this.userLocation)
+        },
+        (error) => {
+          alert('No se puedo obtener la Geolocalizacion')
+          console.log(error)
+          reject()
+        }
+      )
+    })
+  }
+
+  constructor() {
+    this.getUserLocation();
+  }
+}
+
+```
+En el constructor llamamos a la funcion `getUserLocation()` para que inmediatamente se obtenga el valor cuando se use.
+
 ## Uso de Mapbox
 
 ## Marcadores
