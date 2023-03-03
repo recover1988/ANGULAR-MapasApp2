@@ -271,6 +271,50 @@ export class BtnMyLocationComponent {
 
 Podemos ver que inyectamos los servicios de la ubicacion del usuario y la instancia del mapa, juntos podemos hacer que el boton se dirija a la ubicacion del usuario.
 
+## Debounce Timer
+
+Necesitamos enviar el valor del input a la funcion, para eso usamos la referencia y enviamos el valor de estas.
+
+```
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Buscar lugar..."
+    #txtQuery
+    (keyup)="onQueryChanged(txtQuery.value)"
+  />
+```
+
+Para enviar las peticiones hacemos que el input tarde un tiempo antes de enviar la peticion.
+
+```
+ private debounceTimer?: NodeJS.Timeout;
+
+
+  onQueryChanged(query: string = '') {
+    // Limpiar el debounceTimer si ya existe
+    if (this.debounceTimer) clearTimeout(this.debounceTimer);
+
+    this.debounceTimer = setTimeout(() => {
+      console.log(query)
+    }, 350);
+  }
+```
+
+Si da error tenemos que importar en `node` en el tsconfig.json
+
+```
+"types": ["node"]
+```
+
+Si tenemos errores con el CommonJS de MapBox
+
+```
+ "allowedCommonJsDependencies": [
+   "mapbox-gl"
+]
+```
+
 ## Polylinles
 
 ## Rutas
