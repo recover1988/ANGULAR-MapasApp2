@@ -40,7 +40,7 @@ export class PlacesService {
 
     this.isLoadingPlaces = true;
 
-    this.placeApi.get<PlacesResponse>(`${query}.json`, {
+    this.placeApi.get<PlacesResponse>(`/${query}.json`, {
       params: {
         proximity: this.userLocation.join(',')
       }
