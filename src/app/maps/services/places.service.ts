@@ -60,6 +60,10 @@ export class PlacesService {
       })
   }
 
+  deletePlaces() {
+    this.places = [];
+  }
+
   constructor(
     private placeApi: PlacesApiClient,
     private mapService: MapService
