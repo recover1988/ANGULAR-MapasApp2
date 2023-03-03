@@ -1,1 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+.mapboxgl-popup-content{
+  background: #000000b1;
+  color: #ffffffa8;
+  margin: 0;
+  padding: 10px;
+  border-radius: 3px 3px 0 0;
+  font-weight: 700;
+  margin-top: -15px;
+}
+.mapboxgl-popup-close-button {
+  display: none;
+}
+.mapboxgl-popup h6{
+  font-weight: bold;
+}

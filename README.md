@@ -315,6 +315,69 @@ Si tenemos errores con el CommonJS de MapBox
 ]
 ```
 
+## Marcadores
+
+Para crear los marcadores de la busqueda debemos hacer una funcion en el servicio `map.service.ts` que nos permita crear el `Marker` y luego agregarlo al mapa que esta en el servicio,
+
+```
+// services/map.service.ts
+
+  private markers: Marker[] = [];
+
+  // Crear los marcadores de la busqueda
+  createMarkersFromPlaces(places: Feature[]) {
+    if (!this.map) throw Error('Mapa no inicializado');
+
+    this.markers.forEach(marker => marker.remove());
+    const newMarkers = [];
+    for (const place of places) {
+      // coordenadas
+      const [lng, lat] = place.center;
+      // Popup mensaje del marcador
+      const popup = new Popup()
+        .setHTML(`
+          <h6>${place.text}</h6>
+          <span>${place.place_name}</span>
+        `);
+      // Marcador en el mapa
+      const newMarker = new Marker()
+        .setLngLat([lng, lat])
+        .setPopup(popup)
+        .addTo(this.map);
+      // Añadir al array de marcadores
+      newMarkers.push(newMarker);
+    }
+
+    this.markers = newMarkers;
+  }
+```
+
+Ponemos la condicion de que el mapa este inicializado.
+Removemos los marcadores de la busqueda anterior con el `marker.remove()`.
+Con los lugares que nos dio la busqueda hacemos un loop y creamos el popup para cada resultado, luego se lo agregamos al marcador y lo insertamos en el mapa.
+Para cambiar el CSS del popUp debemos utilizar stilos globales en la clase `.mapbocgl-popup`.
+
+```
+.mapboxgl-popup-content{
+  background: #000000b1;
+  color: #ffffffa8;
+  margin: 0;
+  padding: 10px;
+  border-radius: 3px 3px 0 0;
+  font-weight: 700;
+  margin-top: -15px;
+}
+.mapboxgl-popup-close-button {
+  display: none;
+}
+.mapboxgl-popup h6{
+  font-weight: bold;
+}
+
+```
+
+Una vez creada la funciona la llamamos en el servicio de `places.service.ts` que es donde se realiza la busqueda y con esos datos creamos los marcadores.
+
 ## Polylinles
 
 ## Rutas
