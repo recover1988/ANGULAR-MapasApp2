@@ -161,6 +161,41 @@ Y tambien se puede generar nuestro estilos personalizados.
 
 ## Marcadores
 
+Para hacer un marcador en el mapa con su popup necesitamos importar:
+
+```
+import { Map, Popup, Marker } from 'mapbox-gl';
+```
+
+El `Popup` y `Marker` son clases los cuales tienen metodos que nos permiten añadirlos al mapa.
+
+```
+  ngAfterViewInit(): void {
+    if (!this.placesService.userLocation) throw Error('No hay placesServices.userLocation')
+    // Mostrar mapa
+    const map = new Map({
+      container: this.mapDivElement.nativeElement, // container ID
+      style: 'mapbox://styles/mapbox/streets-v12', // style URL
+      center: this.placesService.userLocation, // starting position [lng, lat]
+      zoom: 14, // starting zoom
+    });
+    // Popup
+    const popup = new Popup()   // Popup({}) puede tener un objeto con config
+      .setHTML(`
+        <h6>Aqui estoy</h6>
+        <span>Estoy en este lugar del mundo</span>
+      `);
+    // Marker
+    new Marker({ color: 'red' })
+      .setLngLat(this.placesService.userLocation)
+      .setPopup(popup)
+      .addTo(map)
+  }
+```
+
+Con el `Popup` creamos el mensaje que queremos que muestre y este dentro tambien puede contener diferentes estilos.
+Con el `Marker` hacemos el indicador del mapa y luego le agregamos al mapa con el `.addto(map)`, para poder mostrarlo en el mapa.
+
 ## Polylinles
 
 ## Rutas
