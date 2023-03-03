@@ -196,6 +196,81 @@ El `Popup` y `Marker` son clases los cuales tienen metodos que nos permiten aña
 Con el `Popup` creamos el mensaje que queremos que muestre y este dentro tambien puede contener diferentes estilos.
 Con el `Marker` hacemos el indicador del mapa y luego le agregamos al mapa con el `.addto(map)`, para poder mostrarlo en el mapa.
 
+## FlyTo
+
+Para dirigirse a alguna coordenada se puede usar este metodo de MapBox.
+
+```
+// services/map.service.ts
+
+import { Injectable } from '@angular/core';
+import { LngLatLike, Map } from 'mapbox-gl';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MapService {
+
+  private map?: Map;
+
+  // booleano para saber si el mapa esta listo
+  get isMapReady() {
+    return !!this.map
+  }
+
+  // guardamos la referencia del mapa
+  setMap(map: Map) {
+    this.map = map;
+  }
+
+  // Para volvel al punto anterior
+  flyTo(coords: LngLatLike) {
+    if (!this.isMapReady) {
+      throw Error('El mapa no esta inicializado')
+    }
+    this.map?.flyTo({
+      zoom: 14,
+      center: coords
+    })
+  }
+}
+```
+
+En este servicio nos guardamos la instancia del mapa que iniciamos en otro componente y le agregamos algunas propiedades para tenerlo globalmente en la aplicacion.
+Con la instancia del mapa podemos usar el metodo `.flyTo()` el cual recibe un objeto con el `zoom` y el `center` que ncesita unas coordenadas.
+
+En el `btn-my-location.component.map` podemos ver como usar el servicio.
+
+```
+import { Component } from '@angular/core';
+import { MapService } from '../../services';
+import { PlacesService } from '../../services/places.service';
+
+@Component({
+  selector: 'app-btn-my-location',
+  templateUrl: './btn-my-location.component.html',
+  styleUrls: ['./btn-my-location.component.css']
+})
+export class BtnMyLocationComponent {
+
+  goToMyLocation() {
+    // Condiciones
+    if (!this.placesService.isUserLocationReady) throw Error('No hay ubicacion del usuario')
+    if (!this.mapService.isMapReady) throw Error('No hay mapa disponible')
+    // Uso del servicio para ir a algun punto del mapa en este caso al origen
+    this.mapService.flyTo(this.placesService.userLocation!)
+  }
+
+  constructor(
+    private placesService: PlacesService,
+    private mapService: MapService
+  ) { }
+}
+
+```
+
+Podemos ver que inyectamos los servicios de la ubicacion del usuario y la instancia del mapa, juntos podemos hacer que el boton se dirija a la ubicacion del usuario.
+
 ## Polylinles
 
 ## Rutas

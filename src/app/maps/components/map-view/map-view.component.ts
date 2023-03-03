@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { PlacesService } from '../../services';
+import { MapService, PlacesService } from '../../services';
 import { Map, Popup, Marker } from 'mapbox-gl';
 
 @Component({
@@ -31,12 +31,15 @@ export class MapViewComponent implements AfterViewInit {
       .setLngLat(this.placesService.userLocation)
       .setPopup(popup)
       .addTo(map)
+    // se guarda el mapa en el servicio y asi lo podemos usar de manera global
+    this.mapService.setMap(map);
   }
 
 
 
 
   constructor(
-    private placesService: PlacesService
+    private placesService: PlacesService,
+    private mapService: MapService
   ) { }
 }
