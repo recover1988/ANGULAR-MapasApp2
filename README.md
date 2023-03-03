@@ -397,6 +397,74 @@ El `LngLatBounds()` nos permite `extend` y agregar en el campo de vision los pun
 
 ## Polylinles
 
+Para dibujar la linea del punto inicial hasta el final que es el resultado de la busqueda tenemos que crearnos un metodo en el servicio de `map.service.ts`
+
+```
+ private drawPolyline(route: Route) {
+    console.log({ kms: route.distance / 1000, duration: route.duration / 60 })
+
+    if (!this.map) throw Error('Mapa no inicializado');
+
+    // Dibujamos los puntos en el mapa
+    const coords = route.geometry.coordinates;
+
+    const bounds = new LngLatBounds();
+    coords.forEach(([lng, lan]) => {
+      bounds.extend([lng, lan])
+    })
+
+
+    this.map?.fitBounds(bounds, {
+      padding: 150
+    })
+
+    // Polyline(googlemap) o LineString(mapbox)
+    const sourceData: AnySourceData = {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: coords
+            }
+          }
+        ]
+      }
+    }
+    // Agregamos el id 'RouteString' con el cual identificamos la linea.
+    // Si queremos dibujar mas lineas tendemos que hacer ids dinamicos y los colores tambien.
+
+
+    if (this.map.getLayer('RouteString')) {
+      this.map.removeLayer('RouteString');
+      this.map.removeSource('RouteString');
+    }
+
+    this.map.addSource('RouteString', sourceData);
+    this.map.addLayer({
+      id: 'RouteString',
+      type: 'line',
+      source: 'RouteString',
+      layout: {
+        'line-cap': 'round',
+        'line-join': 'round'
+      },
+      paint: {
+        'line-color': 'black',
+        'line-width': 3
+      }
+    })
+
+
+  }
+```
+
+Al agregar un source para dibujar la ruta debemos darle un id este mismo puede ser generado dinamicamente para poder mantener distintas rutas en el mapa.
+
 ## Rutas
 
 ## Direcciones
