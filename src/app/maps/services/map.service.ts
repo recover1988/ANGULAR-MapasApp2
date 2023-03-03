@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LngLatBounds, LngLatLike, Map, Marker, Popup } from 'mapbox-gl';
+import { AnySourceData, LngLatBounds, LngLatLike, Map, Marker, Popup } from 'mapbox-gl';
 import { DirectionsApiClient } from '../api/directionsApiClient';
 import { DirectionsResponse, Route } from '../interfaces/directions';
 import { Feature } from '../interfaces/places';
@@ -79,6 +79,8 @@ export class MapService {
     console.log({ kms: route.distance / 1000, duration: route.duration / 60 })
 
     if (!this.map) throw Error('Mapa no inicializado');
+
+    // Dibujamos los puntos en el mapa
     const coords = route.geometry.coordinates;
 
     const bounds = new LngLatBounds();
@@ -90,7 +92,52 @@ export class MapService {
     this.map?.fitBounds(bounds, {
       padding: 150
     })
+
+    // Polyline(googlemap) o LineString(mapbox)
+    const sourceData: AnySourceData = {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: coords
+            }
+          }
+        ]
+      }
+    }
+
+    // Agregamos el id 'RouteString' con el cual identificamos la linea.
+    // Si queremos dibujar mas lineas tendemos que hacer ids dinamicos y los colores tambien.
+
+    if (this.map.getLayer('RouteString')) {
+      this.map.removeLayer('RouteString');
+      this.map.removeSource('RouteString');
+    }
+
+    this.map.addSource('RouteString', sourceData);
+    this.map.addLayer({
+      id: 'RouteString',
+      type: 'line',
+      source: 'RouteString',
+      layout: {
+        'line-cap': 'round',
+        'line-join': 'round'
+      },
+      paint: {
+        'line-color': 'black',
+        'line-width': 3
+      }
+    })
+
+
   }
+
+
 
   constructor(
     private directionsApi: DirectionsApiClient
