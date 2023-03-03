@@ -403,6 +403,36 @@ El `LngLatBounds()` nos permite `extend` y agregar en el campo de vision los pun
 
 ## Distancias
 
+Para obtener las distancias en el servicio `map.service.ts` hay que crear un metodo
+
+```
+  // Obtener la distancia y la duracion del recorrido
+  getRouteBetweenPoints(start: [number, number], end: [number, number]) {
+    this.directionsApi.get<DirectionsResponse>(`/${start.join(',')};${end.join(',')}`)
+      .subscribe(resp => this.drawPolyline(resp.routes[0]))
+  }
+
+  private drawPolyline(route: Route) {
+    console.log({ kms: route.distance / 1000, duration: route.duration / 60 })
+
+    if (!this.map) throw Error('Mapa no inicializado');
+    const coords = route.geometry.coordinates;
+
+    const bounds = new LngLatBounds();
+    coords.forEach(([lng, lan]) => {
+      bounds.extend([lng, lan])
+    })
+
+
+    this.map?.fitBounds(bounds, {
+      padding: 150
+    })
+  }
+```
+
+`getRouteBetweenPoints` con esot llamamos a la API de Mapbox y le enviamos el punto inicial y el final, este nos manda un objeto de tipo `DirectionsResponse` que contiene en sus `routes[0]` los valores que necesitamos.
+Hacemos un subscribe y usamos el `drawPolyline` con esto podemos ver en el mapa los dos puntos que queremos unir, ademos obtenemos las distancias y el timpo en recorrer la distancia.
+
 ## Custom Http Clients ( muy útil )
 
 ```
