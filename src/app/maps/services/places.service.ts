@@ -56,7 +56,7 @@ export class PlacesService {
         this.isLoadingPlaces = false;
         this.places = resp.features;
         // Creamos los marcadores de la busqueda
-        this.mapService.createMarkersFromPlaces(this.places);
+        this.mapService.createMarkersFromPlaces(this.places, this.userLocation!);
       })
   }
 

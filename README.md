@@ -378,6 +378,23 @@ Para cambiar el CSS del popUp debemos utilizar stilos globales en la clase `.map
 
 Una vez creada la funciona la llamamos en el servicio de `places.service.ts` que es donde se realiza la busqueda y con esos datos creamos los marcadores.
 
+## Mostara puntos en el mapa
+
+Para mostrar todos los puntos de la busqueda en el mapa tenemos que agregar a la funcion que crea los marcadores y agregar:
+
+```
+    // Limites del mapa
+
+    const bounds = new LngLatBounds();
+    newMarkers.forEach(marker => bounds.extend(marker.getLngLat()));
+    bounds.extend(userLocation)
+
+    this.map.fitBounds(bounds, { padding: 150 });
+
+```
+
+El `LngLatBounds()` nos permite `extend` y agregar en el campo de vision los puntos tambien con el `fitBounds` podemos decirle separacion de los bordes del mapa queremos en la vision.
+
 ## Polylinles
 
 ## Rutas
