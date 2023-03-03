@@ -70,6 +70,95 @@ La funcion `isUserLocationReady` es un boolean.
 
 ## Uso de Mapbox
 
+Instalar el npm de Mapbox y los estilos:
+
+```
+npm install mapbox-gl --save
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
+```
+
+En el `main.ts` hacemos la conexion con el token que nos da Mapbox
+
+```
+import Mapboxgl from 'mapbox-gl'; // or "const Mapboxgl = require('mapbox-gl');"
+
+Mapboxgl.accessToken = '[Aqui va el token]';
+
+```
+
+Una vez realizada la conexion tenemos que mostrar el mapa que requiere dos elementos un `divMap` y las coordenadas.
+
+```
+// map-view.component.html
+
+<div #mapDiv class="map-container"></div>
+
+```
+
+El css para este `map-container`
+
+```
+.map-container {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  width: 100vw;
+  height: 100vh;
+}
+
+```
+
+Y la conexion del lado del back con el `ViewChild` para poder tener mas mapas desplegados al mismo tiempo y el `ngAfterViewInit` para tener las coordenadas del navegador.
+
+```
+// map-view.component.ts
+
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { PlacesService } from '../../services';
+import { Map } from 'mapbox-gl';
+
+@Component({
+  selector: 'app-map-view',
+  templateUrl: './map-view.component.html',
+  styleUrls: ['./map-view.component.css']
+})
+export class MapViewComponent implements AfterViewInit {
+
+  @ViewChild('mapDiv') mapDivElement!: ElementRef;
+
+  ngAfterViewInit(): void {
+    if (!this.placesService.userLocation) throw Error('No hay placesServices.userLocation')
+    // Mostrar mapa
+    const map = new Map({
+      container: this.mapDivElement.nativeElement, // container ID
+      style: 'mapbox://styles/mapbox/satellite-v9', // style URL
+      center: this.placesService.userLocation, // starting position [lng, lat]
+      zoom: 14, // starting zoom
+    });
+  }
+
+  constructor(
+    private placesService: PlacesService
+  ) { }
+}
+
+```
+
+El MapBox tiene diferentes `styles` como:
+
+```
+mapbox://styles/mapbox/streets-v12
+mapbox://styles/mapbox/outdoors-v12
+mapbox://styles/mapbox/light-v11
+mapbox://styles/mapbox/dark-v11
+mapbox://styles/mapbox/satellite-v9
+mapbox://styles/mapbox/satellite-streets-v12
+mapbox://styles/mapbox/navigation-day-v1
+mapbox://styles/mapbox/navigation-night-v1
+```
+
+Y tambien se puede generar nuestro estilos personalizados.
+
 ## Marcadores
 
 ## Polylinles
